@@ -1,0 +1,3 @@
+Here is the result:
+            This is a new line of text
+            Second text file
