@@ -25,25 +25,66 @@
 
 // 
 
-const http = require('http');
+const { readFile,writeFile } = require('fs');
+const path = require('path');
+const util = require('util');
 
-const server = http.createServer((req,res)=>{
-    if(req.url == '/'){
-        res.end('Home Page')
+const readFilePromise = util.promisify(readFile)
+const writeFilePromise = util.promisify(writeFile)
+
+
+
+
+ const start = async() =>{
+    //the async function here is useful when we first wait for the Promise above to be resolved.
+    try {
+        const first = await readFilePromise('./content/first.txt','utf-8');
+        const second = await readFilePromise('./content/second.txt','utf-8');
+        await writeFilePromise('./content/result-mind-grenade.txt',
+            `THIS IS AWESEOME: ${first} ${second}`)
+        console.log(first + '\n' + second);
+    } catch (error) {
+        console.log(error);
+        
     }
-    if(req.url == '/about'){
-        // BLOCKING CODE !!!
-        for(let i = 0; i < 1000;i++){
-            for(let j = 0; j < 1000; j++){
-                console.log(`${i} ${j}`);
-            }
-          }
-        res.end('About Page')
-    }
-    res.end('Error Page');
-})
 
-server.listen(5000,()=>{
-    console.log('Server is listening on port 5000...');   
-})
+    
+ }
 
+ start()
+
+
+
+// Use case / applied before introducing the util module
+// const getText = (path) => {
+//     return new Promise((resolve,reject)=>{
+//      readFile(path,'utf-8',(err,data)=>{
+//         if(err){
+//         reject(err)
+//         }else{
+//         resolve(data)    
+//    }
+//  })
+//    })
+// }
+
+//  const start = async() =>{
+//     //the async function here is useful when we first wait for the Promise above to be resolved.
+//     try {
+//         const first = await getText('./content/first.txt');
+//         const second = await getText('./content/second.txt');
+//         console.log(first + '\n' + second);
+//     } catch (error) {
+//         console.log(error);
+        
+//     }
+
+    
+//  }
+
+//  start()
+
+// Don't re-enable this block of code for the start function above ; older example!!
+// getText('./content/first.txt')
+// .then((result) => console.log(result))
+// .catch((err)=> console.log(err))
